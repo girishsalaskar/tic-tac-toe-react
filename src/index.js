@@ -16,17 +16,21 @@ class Board extends React.Component {
     super(props);
     this.state = {
       squares: Array(9).fill(null),
-      xIsNext: true
+      xIsNext: true,
+      history: []
     }
   }
 
   boxClicked(i) {
     const squares = this.state.squares.slice();
+    let history = this.state.history.slice();
+    history.push(squares);
     if(calculateWinner(squares) || squares[i]) {
+      history = [];
       return;
     }
     squares[i] = this.state.xIsNext?'X':'O';
-    this.setState({ squares: squares, xIsNext:!this.state.xIsNext });
+    this.setState({ squares: squares, xIsNext:!this.state.xIsNext, history: history });
   }
 
   renderSquare(i) {
@@ -34,27 +38,44 @@ class Board extends React.Component {
       onClick={() => this.boxClicked(i)} />;
   }
 
+  jumpTo(number) {
+    console.log(this.state.history[number]);
+  }
+
   render() {
     const winner = calculateWinner(this.state.squares);
     const status = (winner?('Winner is : ' + winner):('Next player: ' + (this.state.xIsNext?'X':'O')));
+    const moves = this.state.history.map((history, number) => {
+      const label = 'Go to ' + (number?'# '+number:'Start');
+      return (
+        <li>
+          <button onClick={() => this.jumpTo(number)}>{label}</button>
+        </li>
+      );
+    });
 
     return (
       <div>
-        <div className="status">{status}</div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
+        <div>
+          <div className="board-row">
+            {this.renderSquare(0)}
+            {this.renderSquare(1)}
+            {this.renderSquare(2)}
+          </div>
+          <div className="board-row">
+            {this.renderSquare(3)}
+            {this.renderSquare(4)}
+            {this.renderSquare(5)}
+          </div>
+          <div className="board-row">
+            {this.renderSquare(6)}
+            {this.renderSquare(7)}
+            {this.renderSquare(8)}
+          </div>
         </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
+        <div className="game-info">
+            <div>{status}</div>
+            <ol>{moves}</ol>        
         </div>
       </div>
     );
