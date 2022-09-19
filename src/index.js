@@ -17,7 +17,7 @@ class Board extends React.Component {
     this.state = {
       squares: Array(9).fill(null),
       xIsNext: true,
-      history: []
+      history: [Array(9).fill(null)]
     }
   }
 
@@ -39,16 +39,19 @@ class Board extends React.Component {
   }
 
   jumpTo(number) {
-    console.log(this.state.history[number]);
+    const squares = this.state.history[number];
+    const xIsNext = number===0;
+    const history = this.state.history.slice(0, number+1);
+    this.setState({squares:squares, xIsNext:xIsNext, history:history});
   }
 
   render() {
     const winner = calculateWinner(this.state.squares);
-    const status = (winner?('Winner is : ' + winner):('Next player: ' + (this.state.xIsNext?'X':'O')));
+    const status = (winner?('Winner is : ' + winner):(this.state.squares.indexOf(null)>-1?('Next player: ' + (this.state.xIsNext?'X':'O')):'Tie'));
     const moves = this.state.history.map((history, number) => {
       const label = 'Go to ' + (number?'# '+number:'Start');
       return (
-        <li>
+        <li key={number}>
           <button onClick={() => this.jumpTo(number)}>{label}</button>
         </li>
       );
