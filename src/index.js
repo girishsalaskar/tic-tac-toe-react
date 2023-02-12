@@ -47,7 +47,7 @@ class Board extends React.Component {
 
   render() {
     const winner = calculateWinner(this.state.squares);
-    const status = (winner?('Winner is : ' + winner):(this.state.squares.indexOf(null)>-1?('Next player: ' + (this.state.xIsNext?'X':'O')):'Tie'));
+    const status = (winner?("'" + winner + "' is winner"):(this.state.squares.indexOf(null)>-1?("'" + (this.state.xIsNext?'X':'O') + "'s Turn"):'Tie'));
     const moves = this.state.history.map((history, number) => {
       const label = 'Go to ' + (number?'# '+number:'Start');
       return (
@@ -77,8 +77,8 @@ class Board extends React.Component {
           </div>
         </div>
         <div className="game-info">
-            <div>{status}</div>
-            <ol>{moves}</ol>        
+            <div className='game-status'><span>{status}</span></div>
+            {/* <ol>{moves}</ol>*/}
         </div>
       </div>
     );
